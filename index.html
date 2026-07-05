@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Encuestas — e-COMMERce Medialunas</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lato:wght@300;400;700&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --cream: #F8F0DC;
+  --brown-dark: #2C1A06;
+  --brown-mid: #5C3310;
+  --gold: #C8862A;
+  --gold-light: #E8A84C;
+  --border: #D4B483;
+  --white: #FFFDF7;
+  --green: #2D6A4F;
+  --green-light: #52B788;
+  --red: #C0392B;
+}
+
+body {
+  background: var(--cream);
+  font-family: 'Lato', sans-serif;
+  color: var(--brown-dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ========= SCREENS ========= */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ========= HOME ========= */
+#screen-home {
+  background: var(--brown-dark);
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+#screen-home::before {
+  content: '🥐';
+  position: absolute;
+  font-size: 200px;
+  opacity: 0.04;
+  top: -30px;
+  right: -40px;
+}
+
+.home-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  color: var(--cream);
+  margin-bottom: 4px;
+}
+.home-sub {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 48px;
+}
+.home-date {
+  font-size: 13px;
+  color: rgba(248,240,220,0.5);
+  margin-bottom: 8px;
+}
+.home-count {
+  font-family: 'Playfair Display', serif;
+  font-size: 56px;
+  color: var(--gold-light);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.home-count-label {
+  font-size: 13px;
+  color: rgba(248,240,220,0.6);
+  margin-bottom: 40px;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--gold); color: var(--brown-dark); }
+.btn-secondary { background: rgba(255,255,255,0.08); color: var(--cream); border: 1.5px solid rgba(255,255,255,0.15); }
+.btn-green { background: var(--green); color: white; }
+.btn-danger { background: var(--red); color: white; }
+.btn-outline { background: transparent; color: var(--brown-mid); border: 2px solid var(--border); }
+
+/* ========= SPEECH ========= */
+#screen-speech {
+  background: var(--cream);
+  padding: 0;
+}
+.speech-header {
+  background: var(--brown-dark);
+  padding: 28px 20px 24px;
+  text-align: center;
+}
+.speech-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--cream);
+  margin-bottom: 4px;
+}
+.speech-header p { font-size: 12px; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
+
+.speech-body {
+  padding: 24px 20px;
+  flex: 1;
+}
+.speech-box {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 24px 20px;
+  border: 2px solid var(--border);
+  margin-bottom: 20px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--brown-dark);
+}
+.speech-box .highlight {
+  font-weight: 700;
+  color: var(--gold);
+}
+.speech-note {
+  font-size: 12px;
+  color: var(--brown-mid);
+  text-align: center;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+.speech-footer { padding: 0 20px 32px; }
+
+/* ========= SURVEY ========= */
+#screen-survey {
+  background: var(--cream);
+}
+.survey-header {
+  background: var(--brown-dark);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.survey-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: var(--cream);
+}
+.survey-step-badge {
+  background: var(--gold);
+  color: var(--brown-dark);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.survey-progress {
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+}
+.survey-progress-fill {
+  height: 100%;
+  background: var(--gold-light);
+  transition: width 0.4s ease;
+}
+
+.survey-body { padding: 28px 20px; flex: 1; }
+
+.question-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.question-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--brown-dark);
+  line-height: 1.35;
+  margin-bottom: 28px;
+}
+
+/* OPTIONS */
+.options { display: flex; flex-direction: column; gap: 10px; }
+.option {
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--brown-dark);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.option:active { transform: scale(0.98); }
+.option-icon { font-size: 22px; }
+.option.yes { border-color: var(--green-light); }
+.option.yes:active { background: #E8F5E9; }
+.option.no { border-color: #f5c6c0; }
+.option.no:active { background: #fdecea; }
+
+/* FREQUENCY OPTIONS */
+.freq-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.freq-option {
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.freq-option:active { background: var(--cream); border-color: var(--gold); transform: scale(0.97); }
+.freq-icon { font-size: 26px; margin-bottom: 6px; }
+.freq-label { font-size: 13px; font-weight: 700; color: var(--brown-dark); }
+
+/* FORM FIELDS */
+.field { margin-bottom: 16px; }
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brown-mid);
+  margin-bottom: 6px;
+}
+.field input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--white);
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  color: var(--brown-dark);
+  outline: none;
+}
+.field input:focus { border-color: var(--gold); }
+.field input::placeholder { color: #bba882; }
+
+.survey-footer { padding: 0 20px 32px; }
+
+/* ========= SUCCESS ========= */
+#screen-success {
+  background: var(--green);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px;
+}
+.success-icon { font-size: 64px; margin-bottom: 16px; }
+.success-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  color: white;
+  margin-bottom: 10px;
+}
+.success-msg { font-size: 15px; color: rgba(255,255,255,0.8); line-height: 1.6; margin-bottom: 40px; }
+
+/* ========= HISTORY ========= */
+#screen-history {
+  background: var(--cream);
+}
+.history-header {
+  background: var(--brown-dark);
+  padding: 24px 20px;
+}
+.history-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--cream);
+  margin-bottom: 4px;
+}
+.history-header p { font-size: 13px; color: rgba(248,240,220,0.5); }
+
+.history-body { padding: 20px; flex: 1; }
+
+.day-card {
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.day-card:active { border-color: var(--gold); }
+.day-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.day-card-date { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--brown-dark); }
+.day-card-count {
+  background: var(--gold);
+  color: var(--brown-dark);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.day-card-stats { display: flex; gap: 16px; }
+.day-stat { font-size: 12px; color: var(--brown-mid); }
+.day-stat strong { color: var(--brown-dark); }
+
+.no-history {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--brown-mid);
+  font-size: 15px;
+}
+
+/* ========= DAY DETAIL ========= */
+#screen-day {
+  background: var(--cream);
+}
+.day-header {
+  background: var(--brown-dark);
+  padding: 20px;
+}
+.day-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--cream);
+  margin-bottom: 4px;
+}
+.day-header p { font-size: 13px; color: rgba(248,240,220,0.5); }
+
+.day-body { padding: 20px; flex: 1; }
+
+.encuesta-card {
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+.encuesta-num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.encuesta-name { font-family: 'Playfair Display', serif; font-size: 16px; margin-bottom: 4px; }
+.encuesta-detail { font-size: 13px; color: var(--brown-mid); line-height: 1.6; }
+.encuesta-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-top: 6px;
+}
+.badge-yes { background: #C8E6C9; color: #1B5E20; }
+.badge-no { background: #FFCDD2; color: #B71C1C; }
+.badge-retry { background: #FFF3E0; color: #E65100; }
+
+.day-footer { padding: 0 20px 32px; }
+.wapp-btn {
+  background: #25D366;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px;
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.back-btn {
+  background: transparent;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--brown-mid);
+  width: 100%;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- ========= HOME ========= -->
+<div class="screen active" id="screen-home">
+  <div class="home-logo">e-COMMERce Medialunas</div>
+  <div class="home-sub">Encuestas de prospección</div>
+  <div class="home-date" id="home-date"></div>
+  <div class="home-count" id="home-count">0</div>
+  <div class="home-count-label">encuestas realizadas hoy</div>
+  <button class="btn btn-primary" onclick="goSpeech()">🥐 Nueva encuesta</button>
+  <button class="btn btn-secondary" onclick="goHistory()">📋 Ver historial</button>
+  <button class="btn btn-secondary" onclick="goSendToday()">📲 Enviar resumen de hoy</button>
+</div>
+
+<!-- ========= SPEECH ========= -->
+<div class="screen" id="screen-speech">
+  <div class="speech-header">
+    <h2>Script de presentación</h2>
+    <p>Leé esto antes de llamar</p>
+  </div>
+  <div class="speech-body">
+    <div class="speech-box">
+      "¡<span class="highlight">Buen día</span>! Mi nombre es <span class="highlight">Leo</span>. Estamos lanzando un emprendimiento de <span class="highlight">medialunas artesanales de manteca a domicilio</span> en el barrio y quería hacerle una breve encuesta de consumo.<br><br>
+      Son solo 2 preguntas y no le lleva más de un minuto. ¿Tiene un momento?"<br><br>
+      <em style="color: var(--brown-mid); font-size: 14px;">[Si acepta, continuar. Si no, agradecer y retirarse.] </em><br><br>
+      "¡Muchas gracias! Y si le parece bien, también le ofrecemos una <span class="highlight">degustación gratuita</span> en los próximos días para que pruebe nuestro producto."
+    </div>
+    <div class="speech-note">Tocá "Iniciar encuesta" cuando el vecino acepte participar</div>
+  </div>
+  <div class="speech-footer">
+    <button class="btn btn-primary" onclick="goSurvey()">Iniciar encuesta →</button>
+    <button class="btn btn-outline" onclick="goHome()">← Volver</button>
+  </div>
+</div>
+
+<!-- ========= SURVEY ========= -->
+<div class="screen" id="screen-survey">
+  <div class="survey-header">
+    <h2 id="survey-title">Pregunta 1</h2>
+    <div style="display:flex;align-items:center;gap:10px"><span class="survey-step-badge" id="survey-step">1 / 4</span><span style="color:rgba(248,240,220,0.5);font-size:22px;cursor:pointer" onclick="goHome()">✕</span></div>
+  </div>
+  <div class="survey-progress"><div class="survey-progress-fill" id="survey-progress"></div></div>
+  <div class="survey-body" id="survey-body"></div>
+  <div class="survey-footer" id="survey-footer"></div>
+</div>
+
+<!-- ========= SUCCESS ========= -->
+<div class="screen" id="screen-success">
+  <div class="success-icon" id="success-icon">✅</div>
+  <div class="success-title" id="success-title">¡Encuesta guardada!</div>
+  <p class="success-msg" id="success-msg"></p>
+  <button class="btn btn-primary" onclick="goSpeech()">+ Nueva encuesta</button>
+  <button class="btn btn-secondary" onclick="goHome()">Volver al inicio</button>
+</div>
+
+<!-- ========= HISTORY ========= -->
+<div class="screen" id="screen-history">
+  <div class="history-header">
+    <h2>Historial de encuestas</h2>
+    <p>Todos los días registrados</p>
+  </div>
+  <div class="history-body" id="history-body"></div>
+<div style="padding:0 20px 32px"><button class="back-btn" onclick="goHome()">← Volver al inicio</button></div>
+</div>
+
+<!-- ========= DAY DETAIL ========= -->
+<div class="screen" id="screen-day">
+  <div class="day-header">
+    <h2 id="day-title">Encuestas del día</h2>
+    <p id="day-subtitle"></p>
+  </div>
+  <div class="day-body" id="day-body"></div>
+  <div class="day-footer">
+    <button class="wapp-btn" id="wapp-btn">
+      <span>📲</span> Enviar resumen por WhatsApp
+    </button>
+    <button class="back-btn" onclick="goHistory()">← Volver al historial</button>
+  </div>
+</div>
+
+<script>
+// ========= STORAGE =========
+const WA_NUMBER = '5491150593803';
+
+function getTodayKey() {
+  const d = new Date();
+  return `enc-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function getTodayLabel() {
+  return new Date().toLocaleDateString('es-AR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+}
+
+function formatDateKey(key) {
+  const parts = key.replace('enc-','').split('-');
+  const d = new Date(parts[0], parts[1]-1, parts[2]);
+  return d.toLocaleDateString('es-AR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+}
+
+function loadDay(key) {
+  return JSON.parse(localStorage.getItem(key) || '[]');
+}
+
+function saveEncuesta(data) {
+  const key = getTodayKey();
+  const day = loadDay(key);
+  data.id = Date.now();
+  data.hora = new Date().toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
+  day.push(data);
+  localStorage.setItem(key, JSON.stringify(day));
+}
+
+function getAllDayKeys() {
+  return Object.keys(localStorage)
+    .filter(k => k.startsWith('enc-'))
+    .sort().reverse();
+}
+
+// ========= SCREENS =========
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  const today = loadDay(getTodayKey());
+  document.getElementById('home-count').textContent = today.length;
+  document.getElementById('home-date').textContent = getTodayLabel();
+  show('home');
+}
+
+function goSpeech() { show('speech'); }
+
+function goHistory() {
+  const keys = getAllDayKeys();
+  const body = document.getElementById('history-body');
+  if (keys.length === 0) {
+    body.innerHTML = '<div class="no-history">📋 Todavía no hay encuestas registradas</div>';
+  } else {
+    body.innerHTML = keys.map(key => {
+      const day = loadDay(key);
+      const yes = day.filter(e => e.degustacion === 'si').length;
+      const no = day.filter(e => e.degustacion === 'no').length;
+      return `<div class="day-card" onclick="goDayDetail('${key}')">
+        <div class="day-card-header">
+          <div class="day-card-date">${formatDateKey(key)}</div>
+          <div class="day-card-count">${day.length} encuestas</div>
+        </div>
+        <div class="day-card-stats">
+          <div class="day-stat">✅ Degustación: <strong>${yes}</strong></div>
+          <div class="day-stat">❌ No: <strong>${no}</strong></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  show('history');
+}
+
+function goDayDetail(key) {
+  const day = loadDay(key);
+  document.getElementById('day-title').textContent = formatDateKey(key);
+  document.getElementById('day-subtitle').textContent = day.length + ' encuestas realizadas';
+
+  const body = document.getElementById('day-body');
+  body.innerHTML = day.map((e, i) => {
+    let badge = e.degustacion === 'si'
+      ? '<span class="encuesta-badge badge-yes">✅ Quiere degustación</span>'
+      : '<span class="encuesta-badge badge-retry">📍 Volver a intentar</span>';
+
+    let detail = '';
+    if (e.nombre) detail += `👤 ${e.nombre}<br>`;
+    if (e.domicilio) detail += `📍 ${e.domicilio}<br>`;
+    if (e.telefono) detail += `📞 ${e.telefono}<br>`;
+    detail += `🕐 ${e.hora} · 🥐 ${e.consume} · 📅 ${e.frecuencia || '—'} · 🏠 Apertura: ${e.horario || '—'}`;
+
+    return `<div class="encuesta-card">
+      <div class="encuesta-num">Encuesta #${i+1}</div>
+      <div class="encuesta-name">${e.nombre || '(sin nombre)'}</div>
+      <div class="encuesta-detail">${detail}</div>
+      ${badge}
+    </div>`;
+  }).join('');
+
+  // WhatsApp button
+  document.getElementById('wapp-btn').onclick = () => sendWhatsApp(key);
+  show('day');
+}
+
+function goSendToday() {
+  const key = getTodayKey();
+  const day = loadDay(key);
+  if (day.length === 0) {
+    alert('No hay encuestas registradas hoy todavía.');
+    return;
+  }
+  sendWhatsApp(key);
+}
+
+function sendWhatsApp(key) {
+  const day = loadDay(key);
+  const dateLabel = formatDateKey(key);
+  const yes = day.filter(e => e.degustacion === 'si');
+  const no = day.filter(e => e.degustacion === 'no');
+
+  let msg = `🥐 *e-COMMERce Medialunas*\n`;
+  msg += `📋 *Resumen de encuestas — ${dateLabel}*\n`;
+  msg += `Total: ${day.length} encuestas\n\n`;
+
+  if (yes.length > 0) {
+    msg += `✅ *QUIEREN DEGUSTACIÓN (${yes.length}):*\n`;
+    yes.forEach((e, i) => {
+      msg += `\n${i+1}. ${e.nombre || 'Sin nombre'}\n`;
+      msg += `   📍 ${e.domicilio || '—'}\n`;
+      msg += `   📞 ${e.telefono || '—'}\n`;
+      msg += `   🥐 ${e.consume} | 📅 ${e.frecuencia || '—'}\n`;
+    });
+  }
+
+  if (no.length > 0) {
+    msg += `\n📍 *VOLVER A INTENTAR (${no.length}):*\n`;
+    no.forEach((e, i) => {
+      msg += `\n${i+1}. ${e.domicilio || '—'}\n`;
+    });
+  }
+
+  msg += `\n_Enviado desde la app de encuestas_`;
+  const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+
+// ========= SURVEY STATE =========
+let survey = {};
+let currentStep = 0;
+
+const steps = [
+  {
+    id: 'consume',
+    title: 'Pregunta 1 de 2',
+    stepLabel: '1 / 4',
+    progress: 25,
+    question: '¿En su hogar consumen medialunas, facturas u otros productos de panadería para el desayuno o merienda?',
+    type: 'yesno',
+    yesLabel: 'Sí, consumimos',
+    noLabel: 'No, no consumimos',
+    onYes: () => nextStep(),
+    onNo: () => nextStep()
+  },
+  {
+    id: 'frecuencia',
+    title: 'Pregunta 2 de 2',
+    stepLabel: '2 / 4',
+    progress: 50,
+    question: '¿Con qué frecuencia los consumen?',
+    type: 'freq',
+    showIf: () => survey.consume === 'si'
+  },
+  {
+    id: 'degustacion',
+    title: 'Degustación',
+    stepLabel: '3 / 4',
+    progress: 75,
+    question: '¿Estarían dispuestos a recibir una degustación gratuita de nuestras medialunas artesanales en los próximos días?',
+    type: 'yesno',
+    yesLabel: '¡Sí, con gusto!',
+    noLabel: 'No, gracias',
+    onYes: () => nextStep(),
+    onNo: () => nextStep()
+  },
+  {
+    id: 'datos',
+    title: 'Datos de contacto',
+    stepLabel: '4 / 4',
+    progress: 90,
+    question: null,
+    type: 'form'
+  }
+];
+
+function goSurvey() {
+  survey = {};
+  currentStep = 0;
+  renderStep();
+  show('survey');
+}
+
+function nextStep() {
+  currentStep++;
+  // Skip frecuencia si no consume
+  if (steps[currentStep] && steps[currentStep].id === 'frecuencia' && survey.consume === 'no') {
+    currentStep++;
+  }
+  renderStep();
+}
+
+function renderStep() {
+  const step = steps[currentStep];
+  if (!step) return;
+
+  document.getElementById('survey-title').textContent = step.title;
+  document.getElementById('survey-step').textContent = step.stepLabel;
+  document.getElementById('survey-progress').style.width = step.progress + '%';
+
+  const body = document.getElementById('survey-body');
+  const footer = document.getElementById('survey-footer');
+  footer.innerHTML = '';
+
+  if (step.type === 'yesno') {
+    body.innerHTML = `
+      <div class="question-label">Encuesta de consumo</div>
+      <div class="question-text">${step.question}</div>
+      <div class="options">
+        <div class="option yes" onclick="selectYesNo('${step.id}', 'si')">
+          <span class="option-icon">✅</span> ${step.yesLabel}
+        </div>
+        <div class="option no" onclick="selectYesNo('${step.id}', 'no')">
+          <span class="option-icon">❌</span> ${step.noLabel}
+        </div>
+      </div>`;
+  }
+
+  else if (step.type === 'freq') {
+    body.innerHTML = `
+      <div class="question-label">Encuesta de consumo</div>
+      <div class="question-text">${step.question}</div>
+      <div class="freq-options">
+        <div class="freq-option" onclick="selectFreq('Todos los días')">
+          <div class="freq-icon">☀️</div>
+          <div class="freq-label">Todos los días</div>
+        </div>
+        <div class="freq-option" onclick="selectFreq('Varias veces por semana')">
+          <div class="freq-icon">📅</div>
+          <div class="freq-label">Varias veces por semana</div>
+        </div>
+        <div class="freq-option" onclick="selectFreq('Los fines de semana')">
+          <div class="freq-icon">🎉</div>
+          <div class="freq-label">Los fines de semana</div>
+        </div>
+        <div class="freq-option" onclick="selectFreq('Ocasionalmente')">
+          <div class="freq-icon">🕐</div>
+          <div class="freq-label">Ocasionalmente</div>
+        </div>
+      </div>`;
+  }
+
+  else if (step.type === 'form') {
+    const isDegustacion = survey.degustacion === 'si';
+    body.innerHTML = `
+      <div class="question-label">${isDegustacion ? '¡Genial! Tomamos sus datos' : 'Guardamos su dirección'}</div>
+      <div class="question-text" style="font-size:17px; margin-bottom:20px;">
+        ${isDegustacion
+          ? 'Necesitamos sus datos para coordinar la degustación.'
+          : 'Anotamos su dirección para volver a visitarlos en otra oportunidad.'}
+      </div>
+      ${isDegustacion ? `
+        <div class="field">
+          <label>Nombre y apellido</label>
+          <input type="text" id="f-nombre" placeholder="Juan García" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Teléfono de contacto</label>
+          <input type="tel" id="f-telefono" placeholder="11-XXXX-XXXX" autocomplete="off">
+        </div>` : ''}
+      <div class="field">
+        <label>Domicilio</label>
+        <input type="text" id="f-domicilio" placeholder="Calle y número" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Horario de apertura</label>
+        <select id="f-horario" style="width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:10px;background:var(--white);font-family:'Lato',sans-serif;font-size:16px;color:var(--brown-dark);outline:none;appearance:none;-webkit-appearance:none;">
+          <option value="">Seleccioná un horario</option>
+          <option>07:00 a 07:30</option>
+          <option>07:30 a 08:00</option>
+          <option>08:00 a 08:30</option>
+          <option>08:30 a 09:00</option>
+          <option>09:00 a 09:30</option>
+          <option>09:30 a 10:00</option>
+          <option>10:00 a 10:30</option>
+          <option>10:30 a 11:00</option>
+        </select>
+      </div>`;
+
+    footer.innerHTML = `<button class="btn btn-green" onclick="saveAndFinish()">Guardar encuesta ✓</button>`;
+  }
+}
+
+function selectYesNo(field, value) {
+  survey[field] = value;
+  nextStep();
+}
+
+function selectFreq(value) {
+  survey.frecuencia = value;
+  nextStep();
+}
+
+function saveAndFinish() {
+  const isDeg = survey.degustacion === 'si';
+
+  if (isDeg) {
+    const nombre = document.getElementById('f-nombre').value.trim();
+    const telefono = document.getElementById('f-telefono').value.trim();
+    const domicilio = document.getElementById('f-domicilio').value.trim();
+    if (!domicilio) { alert('Por favor ingresá el domicilio'); return; }
+    survey.nombre = nombre;
+    survey.telefono = telefono;
+    survey.domicilio = domicilio;
+  } else {
+    const domicilio = document.getElementById('f-domicilio').value.trim();
+    survey.domicilio = domicilio;
+  }
+
+  saveEncuesta(survey);
+
+  // Mostrar pantalla de éxito
+  if (isDeg) {
+    document.getElementById('success-icon').textContent = '🥐';
+    document.getElementById('success-title').textContent = '¡Genial, quiere degustar!';
+    document.getElementById('success-msg').textContent =
+      `Los datos de ${survey.nombre || 'el vecino'} quedaron guardados. Coordinás la visita por WhatsApp cuando estés listo.`;
+  } else {
+    document.getElementById('success-icon').textContent = '📍';
+    document.getElementById('success-title').textContent = 'Dirección guardada';
+    document.getElementById('success-msg').textContent =
+      `Anotamos el domicilio para volver a intentarlo. ¡Quizás la próxima!`;
+  }
+  show('success');
+}
+
+// Init
+goHome();
+</script>
+</body>
+</html>
